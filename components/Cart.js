@@ -16,9 +16,9 @@ import getStripe from '../lib/getStripe';
 
 const Cart = () => {
   const cartRef = useRef();
-  const { totalPrice, totalQuantities, cartItems, setShowCart, onRemove, toggleCartItemQuanitity } = useStateContext();
+  const { totalPrice, totalQuantities, cartItems, setShowCart, onRemove, toggleCartItemQuanitity, stripeSession, setstripeSession } = useStateContext();
 
-  {console.log({cartItems})}
+  // {console.log({cartItems})}
 
 
   const handleCheckout = async () => {
@@ -35,7 +35,9 @@ const Cart = () => {
     if(response.statusCode === 500) return;
     
     const data = await response.json();
-    console.log({data})
+    // console.log({data})
+    setstripeSession(data)
+    // console.log({stripeSession})
 
     toast.loading('Redirecting...');
 

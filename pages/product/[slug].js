@@ -9,11 +9,19 @@ import { useStateContext } from '../../context/StateContext';
 const ProductDetails = ({ product, products }) => {
   const { image, name, details, price } = product;
   const [index, setIndex] = useState(0);
-  const { decQty, incQty, qty, onAdd, setShowCart } = useStateContext();
+  const { decQty, incQty, qty, onAdd, setShowCart, cartItems } = useStateContext();
 
   // console.log({image})  // an array of images
   // console.log({index})
   // console.log(image[index])
+
+
+  const handleOnAdd = async (product, qty) => {
+    const newItems = await onAdd(product, qty);
+    console.log({newItems})
+    localStorage.setItem('CartItems', JSON.stringify(newItems));
+  };
+
 
   const handleBuyNow = () => {
     onAdd(product, qty);
@@ -75,7 +83,8 @@ const ProductDetails = ({ product, products }) => {
             </p>
           </div>
           <div className="buttons">
-            <button type="button" className="add-to-cart" onClick={() => onAdd(product, qty)}>Add to Cart</button>
+            {/* <button type="button" className="add-to-cart" onClick={() => onAdd(product, qty)}>Add to Cart</button> */}
+            <button type="button" className="add-to-cart" onClick={() => handleOnAdd(product, qty)}>Add to Cart</button>
             <button type="button" className="buy-now" onClick={handleBuyNow}>Buy Now</button>
           </div>
         </div>

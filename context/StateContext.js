@@ -10,9 +10,27 @@ export const StateContext = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantities, setTotalQuantities] = useState(0);
   const [qty, setQty] = useState(1);
+  const [stripeSession, setstripeSession] = useState(null);
+
 
   let foundProduct;
   let index;
+
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem('CartItems'));
+    console.log({items})
+
+    let subTotal = items?.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.quantity * currentValue.price;
+    }, 0);
+
+    if (items) {
+      setCartItems(items);
+      setTotalQuantities(items.length);
+      setTotalPrice(subTotal);
+    }
+  }, []);
 
 
   const incQty = () => setQty((prevQty) => prevQty + 1);
@@ -45,12 +63,21 @@ export const StateContext = ({ children }) => {
         }
       })
       setCartItems(updatedCartItems);
+
+      toast.success(`${qty} ${product.name} added to the cart`)
+
+      return updatedCartItems;
     } else {
       // if item is not in the cart yet
       product.quantity = quantity;
       setCartItems([...cartItems, { ...product }]);
+
+      toast.success(`${qty} ${product.name} added to the cart`)
+
+      return [...cartItems, { ...product }]
     }
-    toast.success(`${qty} ${product.name} added to the cart`)
+    // toast.success(`${qty} ${product.name} added to the cart`)
+
   };
 
 
@@ -120,7 +147,9 @@ export const StateContext = ({ children }) => {
         toggleCartItemQuanitity,
         setCartItems,
         setTotalPrice,
-        setTotalQuantities
+        setTotalQuantities,
+        stripeSession, 
+        setstripeSession
       }}
     >
       {children}
