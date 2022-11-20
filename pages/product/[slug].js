@@ -19,6 +19,7 @@ const ProductDetails = ({ product, products }) => {
   const handleOnAdd = async (product, qty) => {
     const newItems = await onAdd(product, qty);
     console.log({newItems})
+    
     localStorage.setItem('CartItems', JSON.stringify(newItems));
   };
 
@@ -134,7 +135,7 @@ export const getStaticPaths = async () => {
 
 
 export const getStaticProps = async ({ params: { slug }}) => {
-  const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
+  const query = `*[_type == "product" && slug.current == '${slug.toLowerCase()}'][0]`;
   const productsQuery = '*[_type == "product"]'
 
   const product = await client.fetch(query);

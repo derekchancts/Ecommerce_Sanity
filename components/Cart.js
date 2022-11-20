@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import {
   AiOutlineMinus,
@@ -16,9 +16,26 @@ import getStripe from '../lib/getStripe';
 
 const Cart = () => {
   const cartRef = useRef();
-  const { totalPrice, totalQuantities, cartItems, setShowCart, onRemove, toggleCartItemQuanitity, stripeSession, setstripeSession } = useStateContext();
+  // const { totalPrice, totalQuantities, cartItems, setShowCart, onRemove, toggleCartItemQuanitity, stripeSession, setstripeSession } = useStateContext();
+  const { totalPrice, totalQuantities, cartItems, setShowCart, onRemove, toggleCartItemQuanitity } = useStateContext();
+  // const [stripeData, setStripeData] = useState(null)
 
   // {console.log({cartItems})}
+
+
+  const handleOnToggleCartItemQuanitity = async (id, value) => {
+    const updatedCartItrems = await toggleCartItemQuanitity(id, value);
+    console.log({updatedCartItrems})
+    localStorage.setItem('CartItems', JSON.stringify(updatedCartItrems));
+  };
+
+
+
+  // useEffect(() => {
+  //   setstripeSession(stripeData);
+  //   console.log({stripeData})
+  //   console.log({stripeSession})
+  // }, [stripeData])
 
 
   const handleCheckout = async () => {
@@ -32,16 +49,19 @@ const Cart = () => {
       body: JSON.stringify(cartItems),
     });
 
-    if(response.statusCode === 500) return;
+    if (response.statusCode === 500) return;
     
-    const data = await response.json();
+    let data = await response.json();
     // console.log({data})
-    setstripeSession(data)
+    // setStripeData(data)
+
+    // setstripeSession(data)
     // console.log({stripeSession})
 
     toast.loading('Redirecting...');
 
     stripe.redirectToCheckout({ sessionId: data.id });
+    // window.location.href = data.url;
   };
 
 
@@ -99,7 +119,8 @@ const Cart = () => {
                       <p className="quantity-desc">
                         <span
                           className="minus"
-                          onClick={() => toggleCartItemQuanitity(item._id, "dec")}
+                          // onClick={() => toggleCartItemQuanitity(item._id, "dec")}
+                          onClick={() => handleOnToggleCartItemQuanitity(item._id, "dec")}
                         >
                           <AiOutlineMinus />
                         </span>
@@ -108,7 +129,8 @@ const Cart = () => {
                         </span>
                         <span
                           className="plus"
-                          onClick={() => toggleCartItemQuanitity(item._id, "inc")}
+                          // onClick={() => toggleCartItemQuanitity(item._id, "inc")}
+                          onClick={() => handleOnToggleCartItemQuanitity(item._id, "inc")}
                         >
                           <AiOutlinePlus />
                         </span>

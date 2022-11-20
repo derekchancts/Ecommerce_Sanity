@@ -56,11 +56,11 @@ export const StateContext = ({ children }) => {
       // setTotalQuantities(prevTotalQuantities => prevTotalQuantities + quantity);
 
       // if item already exist in the cart, then we only want to update the quantity
-      const updatedCartItems = cartItems.map(cartProduct => {
-        if(cartProduct._id === product._id) return {
-          ...cartProduct,
-          quantity: cartProduct.quantity + quantity
+      const updatedCartItems = cartItems.map(item => {
+        if (item._id === product._id){
+          return {...item, quantity: checkProductInCart.quantity + quantity}
         }
+        return item
       })
       setCartItems(updatedCartItems);
 
@@ -74,10 +74,9 @@ export const StateContext = ({ children }) => {
 
       toast.success(`${qty} ${product.name} added to the cart`)
 
-      return [...cartItems, { ...product }]
+      return ([...cartItems, { ...product }])
     }
     // toast.success(`${qty} ${product.name} added to the cart`)
-
   };
 
 
@@ -101,34 +100,45 @@ export const StateContext = ({ children }) => {
 
     if(value === 'inc') {
       // setCartItems([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity + 1 } ]);
-      setCartItems(prevCartItems => 
-        prevCartItems.map(item => {          
-          if (item._id === id){
-            return {...item, quantity: foundProduct.quantity + 1}
-          }
-          return item
-        })
-      );
-
+      const updatedCartItems = cartItems.map(item => {
+        if (item._id === id){
+          return {...item, quantity: foundProduct.quantity + 1}
+        }
+        return item
+      })
+      setCartItems(updatedCartItems);
+      
       setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price)
       setTotalQuantities(prevTotalQuantities => prevTotalQuantities + 1)
+
+      return (updatedCartItems)
+
     } else if(value === 'dec') {
       if (foundProduct.quantity > 1) {
         // setCartItems([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity - 1 } ]);
-        setCartItems(prevCartItems => 
-          prevCartItems.map(item => {          
-            if (item._id === id){
-              return {...item, quantity: foundProduct.quantity - 1}
-            }
-            return item
-          })
-        );
+        const updatedCartItems = cartItems.map(item => {
+          if (item._id === id){
+            return {...item, quantity: foundProduct.quantity - 1}
+          }
+          return item
+        })
+        setCartItems(updatedCartItems);
 
         setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price)
         setTotalQuantities(prevTotalQuantities => prevTotalQuantities - 1)
+
+        return (updatedCartItems)
       }
     }
+    
   };
+
+
+  // const sortedItems = cartItems.sort(function (a, b) {
+  //   if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+  //   if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+  //   return 0;
+  // })
 
 
   return (
@@ -136,6 +146,7 @@ export const StateContext = ({ children }) => {
       value={{
         showCart,
         setShowCart,
+        // cartItems: sortedItems,
         cartItems,
         totalPrice,
         totalQuantities,
