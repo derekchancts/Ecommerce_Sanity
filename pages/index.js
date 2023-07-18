@@ -5,7 +5,7 @@ import { client } from '../lib/client';
 
 const Home = ({ products, bannerData }) => {
   return (
-    <>
+    <div>
       <HeroBanner heroBanner={bannerData?.length && bannerData[0]} />
 
       <div className='products-heading'>
@@ -13,16 +13,12 @@ const Home = ({ products, bannerData }) => {
         <p>Speakers of many variations</p>
       </div>
 
-      {/* <div className='products-container'>
-        {['Product 1', 'Product 2'].map(product => product)  }
-      </div> */}
-
       <div className='products-container'>
         {products?.map(product => <Product key={product._id} product={product} />)  }
       </div>
 
       <FooterBanner footerBanner={bannerData && bannerData[0]} />
-    </>
+    </div>
   )
 }
 
