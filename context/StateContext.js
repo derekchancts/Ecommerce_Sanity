@@ -18,23 +18,26 @@ export const StateContext = ({ children }) => {
 
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('CartItems'));
-    console.log({items})
+    if (JSON.parse(localStorage.getItem('CartItems') !== 'undefined')) {
 
-    let subTotal = items?.reduce((previousValue, currentValue) => {
-      return previousValue + currentValue.quantity * currentValue.price;
-    }, 0);
-
-    let totalItems = items?.reduce((previousValue, currentValue) => {
-      return previousValue + currentValue.quantity;
-    }, 0);
-    // console.log({totalItems})
-
-    if (items) {
-      setCartItems(items);
-      setTotalQuantities(totalItems);
-      setTotalPrice(subTotal);
-    }
+      const items = JSON.parse(localStorage.getItem('CartItems'));
+      console.log({items})
+  
+      let subTotal = items?.reduce((previousValue, currentValue) => {
+        return previousValue + currentValue.quantity * currentValue.price;
+      }, 0);
+  
+      let totalItems = items?.reduce((previousValue, currentValue) => {
+        return previousValue + currentValue.quantity;
+      }, 0);
+      // console.log({totalItems})
+  
+      if (items) {
+        setCartItems(items);
+        setTotalQuantities(totalItems);
+        setTotalPrice(subTotal);
+      }
+    } 
   }, []);
 
 
@@ -42,9 +45,11 @@ export const StateContext = ({ children }) => {
   
   const decQty = () => {
     setQty(prevQty => {
-      if(prevQty - 1 < 1) return 1;
+      // if(prevQty - 1 < 1 ) return 1;
+      if(prevQty > 1) return prevQty - 1;
      
-      return prevQty - 1;
+      return 1;
+      // return prevQty - 1;
     });
   };
 
@@ -94,7 +99,7 @@ export const StateContext = ({ children }) => {
     setTotalQuantities(prevTotalQuantities => prevTotalQuantities - foundProduct.quantity);
     setCartItems(newCartItems);
 
-    // setcookie('CartItems')
+    localStorage.setItem('CartItems', JSON.stringify(newCartItems));
   };
 
 
@@ -133,6 +138,19 @@ export const StateContext = ({ children }) => {
 
         setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price)
         setTotalQuantities(prevTotalQuantities => prevTotalQuantities - 1)
+
+        localStorage.setItem('CartItems', JSON.stringify(updatedCartItems));
+
+        return (updatedCartItems)
+      }
+
+      if (foundProduct.quantity === 1) {
+        const updatedCartItems = cartItems.filter(item => item._id !== id)
+       
+        setCartItems(updatedCartItems);
+        setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price)
+
+        localStorage.setItem('CartItems', JSON.stringify(updatedCartItems));
 
         return (updatedCartItems)
       }

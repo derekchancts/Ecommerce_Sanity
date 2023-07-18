@@ -23,9 +23,11 @@ const Cart = () => {
   // {console.log({cartItems})}
 
 
+  
   const handleOnToggleCartItemQuanitity = async (id, value) => {
     const updatedCartItrems = await toggleCartItemQuanitity(id, value);
     console.log({updatedCartItrems})
+
     localStorage.setItem('CartItems', JSON.stringify(updatedCartItrems));
   };
 
