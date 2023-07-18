@@ -25,9 +25,14 @@ export const StateContext = ({ children }) => {
       return previousValue + currentValue.quantity * currentValue.price;
     }, 0);
 
+    let totalItems = items?.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.quantity;
+    }, 0);
+    // console.log({totalItems})
+
     if (items) {
       setCartItems(items);
-      setTotalQuantities(items.length);
+      setTotalQuantities(totalItems);
       setTotalPrice(subTotal);
     }
   }, []);
